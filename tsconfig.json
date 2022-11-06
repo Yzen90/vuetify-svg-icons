@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node18-strictest-esm/tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "declaration": true,
+    "outDir": "dist",
+    "noImplicitReturns": false
+  },
+  "files": ["index.ts"],
+  "exclude": ["node_modules"]
+}
