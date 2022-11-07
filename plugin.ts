@@ -4,6 +4,7 @@ import c from 'picocolors';
 import type { IconPack } from '@fortawesome/fontawesome-common-types';
 
 import { faIconToString } from './index.js';
+import { stripImports, truncate } from './utils.js';
 
 export interface PluginOptions {
   /** Target for transformation. */
@@ -27,14 +28,17 @@ export interface PluginOptions {
 
 export default (options: PluginOptions): PluginOption => {
   const name = 'Icon embedding plugin';
-  const pkg = options.package ?? '@fortawesome/free-solid-svg-icons';
+  const iconPackage = options.package ?? '@fortawesome/free-solid-svg-icons';
   const removeImports = options.removeImports ?? true;
   const showReplacements = options.showReplacements ?? false;
 
   let fas: IconPack;
 
-  const truncate = (text: string) => (text.length > 50 ? text.slice(0, 49) + '…' : text);
-  const replacer = (original: string, icon: string) => (icon in fas ? `'${faIconToString(fas[icon]!)}'` : original);
+  const replacer = (original: string, fullID: string) => {
+    const icon = fullID.split('.').pop()!;
+    return icon in fas ? `'${faIconToString(fas[icon]!)}'` : original;
+  };
+
   const replacerShow = (original: string, icon: string) => {
     const result = replacer(original, icon);
     if (result === original) console.info(` > ${icon} -> ${c.yellow('Not found, not replaced.')}`);
@@ -47,7 +51,7 @@ export default (options: PluginOptions): PluginOption => {
   return {
     name,
     buildStart: async () => {
-      if (options.include) ({ fas } = await import(pkg /* @vite-ignore */));
+      if (options.include) ({ fas } = await import(iconPackage /* @vite-ignore */));
       else console.warn(`${c.magenta(name)}: ${c.yellow('`include` option was not provided.')}`);
     },
     transform: (code, id) => {
@@ -56,10 +60,7 @@ export default (options: PluginOptions): PluginOption => {
 
         let transformed = code.replace(/faIconToString\((\S+)\)/gm, showReplacements ? replacerShow : replacer);
 
-        if (removeImports) {
-          transformed = transformed.replace(/^.*import.*@xrnoz\/vuetify-svg-icons.*$(?:\r?\n|\r)?/m, '');
-          // TODO: Parse code to remove import of `pkg`
-        }
+        if (removeImports) stripImports(transformed, iconPackage);
 
         return transformed;
       }

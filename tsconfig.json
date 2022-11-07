@@ -7,5 +7,8 @@
     "noImplicitReturns": false
   },
   "files": ["index.ts", "plugin.ts", "vuetify.d.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "esm": true
+  }
 }
