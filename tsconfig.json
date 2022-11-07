@@ -6,6 +6,6 @@
     "outDir": "dist",
     "noImplicitReturns": false
   },
-  "files": ["index.ts"],
+  "files": ["index.ts", "plugin.ts", "vuetify.d.ts"],
   "exclude": ["node_modules"]
 }

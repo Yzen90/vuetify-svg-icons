@@ -2,28 +2,54 @@
   "name": "@xrnoz/vuetify-svg-icons",
   "version": "0.0.1",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": ["dist/**"],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./plugin": "./dist/plugin.js"
+  },
+  "typesVersions": {
+    "*": {
+      "plugin": [
+        "dist/plugin.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist/**"
+  ],
+  "dependencies": {
+    "picocolors": "^1.0.0"
+  },
   "peerDependencies": {
+    "@fortawesome/free-solid-svg-icons": "6.x || 5.x",
     "vite": "3.x",
-    "vuetify": "3.x",
-    "@fortawesome/free-solid-svg-icons": "5.x || 6.x"
+    "vue": "3.x",
+    "vuetify": "3.x"
+  },
+  "peerDependenciesMeta": {
+    "@fortawesome/free-solid-svg-icons": {
+      "optional": true
+    }
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-common-types": "^6.2.0",
-    "@fortawesome/free-solid-svg-icons": "6.x",
+    "@fortawesome/fontawesome-common-types": "6.2.0",
+    "@fortawesome/free-solid-svg-icons": "6.2.0",
     "@tsconfig/node18-strictest-esm": "1.0.1",
     "@types/node": "18.11.9",
+    "prettier": "2.7.1",
+    "rimraf": "3.0.2",
     "typescript": "4.8.4",
-    "vite": "3.x",
-    "vuetify": "3.x"
+    "vite": "3.2.2",
+    "vue": "3.2.41",
+    "vuetify": "3.0.0"
   },
   "engines": {
     "yarn": ">=1.22.19"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "rimraf dist && tsc",
+    "fmt": "prettier --write ."
   },
   "description": "Adds support for Font Awesome SVG icons to Vuetify 3.",
   "keywords": [
@@ -31,6 +57,10 @@
     "svg",
     "icons"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xrnoz/vuetify-svg-icons.git"
+  },
   "author": "Edgar Montiel Cruz <edgar@xrnoz.io>",
   "license": "MIT",
   "private": false
