@@ -5,8 +5,10 @@ import { IconValue } from 'vuetify/lib/composables/icons.mjs';
 import type { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import type { IconProps, IconSet } from 'vuetify';
 
+/** @public */
 export const faIconToString = (icon: IconDefinition) => `SVG;0 0 ${icon.icon[0]} ${icon.icon[1]};${icon.icon[4]}`;
 
+/** @public */
 export const SVGIcon: JSXComponent<IconProps> = defineComponent({
   name: 'SVGIcon',
   inheritAttrs: false,

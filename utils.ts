@@ -1,5 +1,7 @@
 import { parse, Node } from 'acorn';
 import { ancestor, simple } from 'acorn-walk';
+import { diff } from 'jest-diff';
+import c from 'picocolors';
 
 import type { ImportDeclaration /* , ImportExpression */ } from 'estree';
 
@@ -72,3 +74,18 @@ export const stripImports = (code: string, iconPackage: string) => {
 };
 
 export const truncate = (text: string) => (text.length > 50 ? text.slice(0, 49) + '…' : text);
+
+export const difference = (original: string, transformed: string) => {
+  let diffText = diff(original, transformed, {
+    omitAnnotationLines: true,
+    aColor: c.yellow,
+    aIndicator: '  -',
+    bColor: c.yellow,
+    bIndicator: '  +',
+    commonIndicator: '   ',
+    contextLines: 2,
+    expand: false,
+  });
+  if (diffText?.indexOf('@@') === 5) return diffText.substring(diffText.indexOf('\n') + 1);
+  return diffText;
+};
