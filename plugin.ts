@@ -78,11 +78,14 @@ export default (options: PluginOptions) => {
         const matches = file.ext.toLowerCase() === '.vue' ? [] : undefined;
         let transformed = code.replace(matcher, useReplacer(showReplacements, extractor, icons, matches));
 
-        if (matches && matches.length > 0) for (const match of matches) code.replace(match, '');
-
         if (removeImports) {
           const original = showReplacements ? transformed : '';
+
           transformed = stripImports(transformed, iconPackage);
+          transformed = transformed.replace(RegExp(`${options.extractor?.name ?? 'faIconToString'},?`, 'm'), '');
+
+          if (matches) for (const match of matches) transformed = transformed.replace(RegExp(`${match},?`, 'm'), '');
+
           if (showReplacements) console.info(difference(original, transformed));
         }
 

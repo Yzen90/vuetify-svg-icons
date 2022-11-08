@@ -1,4 +1,4 @@
-# Font Awesome SVG Icons alternative support for Vuetify 3
+# Font Awesome SVG Icons alternative for Vuetify 3
 
 Alternative to the built-in support for [Font Awesome SVG Icons](https://fontawesome.com/search?o=r&m=free) of Vuetify, allowing the mixed usage of other SVG icon packs as `@mdi/js`.
 
@@ -73,7 +73,7 @@ vue.mount('#app');
   </v-row>
   <v-row>
     <!-- `dislike` alias defined in icons.ts -->
-    <v-btn color="red" append-icon="$dislike">Like</v-btn>
+    <v-btn color="red" append-icon="$dislike">Dislike</v-btn>
   </v-row>
   <v-row>
     <!-- usage on the fly -->
@@ -87,7 +87,7 @@ vue.mount('#app');
 </script>
 ```
 
-5. (Optional) Configure the plugin
+### 5. (Optional) Configure the plugin
 
 ```typescript
 import { defineConfig } from 'vite';
@@ -99,7 +99,7 @@ export default defineConfig({
   plugins: [
     vue({}),
     vuetify({}),
-    embedIcons({ include: './src/icons.ts', showReplacements: true }),
+    embedIcons({ include: ['./src/icons.ts', './src/ZaWarudo.vue'], showReplacements: true }),
   ],
 });
 ```

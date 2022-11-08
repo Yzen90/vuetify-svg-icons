@@ -73,8 +73,8 @@ export const stripImports = (code: string, iconPackage: string) => {
   return code;
 };
 
-export const difference = (original: string, transformed: string) => {
-  let diffText = diff(original, transformed, {
+export const difference = (original: string, transformed: string) =>
+  diff(original, transformed, {
     omitAnnotationLines: true,
     aColor: c.yellow,
     aIndicator: '  -',
@@ -83,10 +83,7 @@ export const difference = (original: string, transformed: string) => {
     commonIndicator: '   ',
     contextLines: 2,
     expand: false,
-  });
-  if (diffText?.indexOf('@@') === 5) return diffText.substring(diffText.indexOf('\n') + 1);
-  return diffText;
-};
+  })?.replace(/^[^@]*@@[^,]+,[^,]+,[^,]+@@[^(?:\r?\n|\r)]*$(?:\r?\n|\r)?/gm, '');
 
 const truncate = (text: string) => (text.length > 50 ? text.slice(0, 49) + '…' : text);
 
