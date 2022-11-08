@@ -1,21 +1,25 @@
 import { appendFile } from 'fs/promises';
+import { parse } from 'path';
 
 import { createFilter, PluginOption, FilterPattern } from 'vite';
 import c from 'picocolors';
 
-import type { IconPack } from '@fortawesome/fontawesome-common-types';
-
 import { faIconToString } from './index.js';
-import { stripImports, truncate, difference } from './utils.js';
+import { stripImports, useReplacer, difference } from './utils.js';
 
 export interface PluginOptions {
-  /** Plugin target files. */
+  /** Target files for the plugin. */
   include: FilterPattern;
   /**
    * Package for icon extraction.
    * @default '@fortawesome/free-solid-svg-icons'
    */
   package?: string;
+  /**
+   * Export of `options.package` that provides the icons.
+   * @default 'fas'
+   */
+  iconsExport?: string;
   /**
    * Remove the first import of `@xrnoz/vuetify-svg-icons` and of `options.package` from the target.
    * @default true
@@ -42,7 +46,7 @@ export interface PluginOptions {
   /** Restrict the plugin to run only on `build` or `serve`. */
   apply?: 'build' | 'serve';
   /**
-   * File to dump the transform result for debugging purposes.
+   * File to dump the transforms result for debugging purposes.
    */
   dumpFile?: string;
 }
@@ -50,47 +54,40 @@ export interface PluginOptions {
 export default (options: PluginOptions) => {
   const name = 'Icon embedding plugin';
   const iconPackage = options.package ?? '@fortawesome/free-solid-svg-icons';
+  const iconsExport = options.iconsExport ?? 'fas';
   const removeImports = options.removeImports ?? true;
   const showReplacements = options.showReplacements ?? false;
-  const matcher = RegExp(`${options.extractor?.name ?? 'faIconToString'}\((\S+)\)`, 'gm');
+  const matcher = RegExp(`(?:\\$setup\\.)?${options.extractor?.name ?? 'faIconToString'}\\((\\S+)\\)`, 'gm');
   const extractor = options.extractor?.fn ?? faIconToString;
 
-  let fas: IconPack;
-
-  const replacer = (original: string, fullID: string) => {
-    const icon = fullID.split('.').pop()!;
-    return icon in fas ? `'${extractor(fas[icon]!)}'` : original;
-  };
-
-  const replacerShow = (original: string, icon: string) => {
-    const result = replacer(original, icon);
-    if (result === original) console.info(` > ${icon} -> ${c.yellow('Not found, not replaced.')}`);
-    else console.info(`  - ${icon} -> ${c.dim(truncate(result))}`);
-    return result;
-  };
+  let icons: Record<string, any>;
 
   const filter = options.include ? createFilter(options.include) : () => false;
 
   const plugin: PluginOption = {
     name,
     buildStart: async () => {
-      if (options.include) ({ fas } = await import(iconPackage /* @vite-ignore */));
+      if (options.include) icons = (await import(iconPackage /* @vite-ignore */))[iconsExport];
       else console.warn(`${c.magenta(name)}: ${c.yellow('`include` option was not provided.')}`);
     },
     transform: async (code, id) => {
       if (filter(id)) {
-        if (showReplacements) console.info(`\n  ${c.magenta(name)}:`);
+        const file = parse(id);
+        if (showReplacements) console.info(`\n  [${c.dim(file.base)}] ${c.magenta(name)}:`);
 
-        let transformed = code.replace(matcher, showReplacements ? replacerShow : replacer);
+        const matches = file.ext.toLowerCase() === '.vue' ? [] : undefined;
+        let transformed = code.replace(matcher, useReplacer(showReplacements, extractor, icons, matches));
+
+        if (matches && matches.length > 0) for (const match of matches) code.replace(match, '');
 
         if (removeImports) {
-          const original = showReplacements ? '' : transformed;
+          const original = showReplacements ? transformed : '';
           transformed = stripImports(transformed, iconPackage);
           if (showReplacements) console.info(difference(original, transformed));
         }
 
         if (typeof options.dumpFile === 'string')
-          await appendFile(options.dumpFile, `\n// File: ${id}\n${transformed}`, { encoding: 'utf8' });
+          await appendFile(options.dumpFile, `\n// ${id}\n${transformed}`, { encoding: 'utf8' });
 
         return transformed;
       }

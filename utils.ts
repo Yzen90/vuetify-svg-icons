@@ -73,8 +73,6 @@ export const stripImports = (code: string, iconPackage: string) => {
   return code;
 };
 
-export const truncate = (text: string) => (text.length > 50 ? text.slice(0, 49) + '…' : text);
-
 export const difference = (original: string, transformed: string) => {
   let diffText = diff(original, transformed, {
     omitAnnotationLines: true,
@@ -88,4 +86,33 @@ export const difference = (original: string, transformed: string) => {
   });
   if (diffText?.indexOf('@@') === 5) return diffText.substring(diffText.indexOf('\n') + 1);
   return diffText;
+};
+
+const truncate = (text: string) => (text.length > 50 ? text.slice(0, 49) + '…' : text);
+
+export const useReplacer = (
+  showReplacements: boolean,
+  extractor: Function,
+  icons: Record<string, any>,
+  matches?: Array<string>,
+) => {
+  const replacer = (original: string, fullID: string) => {
+    const icon = fullID.split('.').pop()!;
+    if (icon in icons) {
+      matches?.push(icon);
+      return `'${extractor(icons[icon]!)}'`;
+    }
+    return original;
+  };
+
+  if (showReplacements) {
+    return (original: string, icon: string) => {
+      const result = replacer(original, icon);
+      if (result === original) console.info(` > ${icon} -> ${c.yellow('Not found, not replaced.')}`);
+      else console.info(`  - ${icon} -> ${c.dim(truncate(result))}`);
+      return result;
+    };
+  }
+
+  return replacer;
 };

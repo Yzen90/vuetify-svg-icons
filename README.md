@@ -109,13 +109,14 @@ export default defineConfig({
 
 Option           | Required | Default                               | Description
 -----------------|----------|---------------------------------------|------------
-include          | yes      |                                       | Plugin target files.
+include          | yes      |                                       | Target files for the plugin.
 package          | no       | `'@fortawesome/free-solid-svg-icons'` | Package for icon extraction.
+iconsExport      | no       | `'fas'`                               | Export of `options.package` that provides the icons.
 removeImports    | no       | `true`                                | Whether to remove the first import of `@xrnoz/vuetify-svg-icons` and of `options.package` from the target.
 showReplacements | no       | `false`                               | Whether to show replacement information.
 extractor        | no       | `faIconToString`                      | Function to get the SVG data from the icon object as a string.
 apply            | no       |                                       | Whether to restrict the plugin to run only on `build` or `serve`.
-dumpFile         | no       |                                       | File to dump the transform result for debugging purposes.
+dumpFile         | no       |                                       | File to dump the transform results for debugging purposes.
 
 ## Resources
 
