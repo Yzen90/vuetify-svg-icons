@@ -17,7 +17,7 @@ const getLocation = (ancestors: Node[]): Location | null => {
   return null;
 };
 
-export const stripImports = (code: string, iconPackage: string) => {
+export const stripImports = (code: string, iconPackage: string, extractorPkg: string) => {
   const ast = parse(code, { ecmaVersion: 'latest', sourceType: 'module' });
 
   const imports: Location[] = [];
@@ -27,7 +27,7 @@ export const stripImports = (code: string, iconPackage: string) => {
   try {
     simple(ast, {
       ImportDeclaration({ start, end, source }: MaybeImportDeclaration) {
-        if (!packageFound && source?.value === '@xrnoz/vuetify-svg-icons') {
+        if (!packageFound && source?.value === extractorPkg) {
           imports.push({ start, end });
           packageFound = true;
           if (iconPackageFound) throw null; // Stop search
@@ -42,7 +42,7 @@ export const stripImports = (code: string, iconPackage: string) => {
     if (!packageFound || !iconPackageFound) {
       ancestor(ast, {
         ImportExpression({ source }: MaybeImportExpression, _, ancestors) {
-          if (!packageFound && source?.value === '@xrnoz/vuetify-svg-icons') {
+          if (!packageFound && source?.value === extractorPkg) {
             const location = getLocation(ancestors);
             if (location) imports.push(location);
             packageFound = true;

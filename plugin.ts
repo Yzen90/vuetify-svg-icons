@@ -4,7 +4,7 @@ import { parse } from 'path';
 import { createFilter, PluginOption, FilterPattern } from 'vite';
 import c from 'picocolors';
 
-import { faIconToString } from './index.js';
+import { faIconToString, embedIcon } from './index.js';
 import { stripImports, useReplacer, difference } from './utils.js';
 
 export interface PluginOptions {
@@ -21,7 +21,7 @@ export interface PluginOptions {
    */
   iconsExport?: string;
   /**
-   * Remove the first import of `@xrnoz/vuetify-svg-icons` and of `options.package` from the target.
+   * Remove the first import of `options.extractor.package` (default: '@xrnoz/vuetify-svg-icons') and of `options.package` (default: '@fortawesome/free-solid-svg-icons') from the target.
    * @default true
    */
   removeImports?: boolean;
@@ -42,6 +42,11 @@ export interface PluginOptions {
      * @default 'faIconToString'
      */
     name: string;
+    /**
+     * Package that exports the icon extractor as it is imported in the target, e.g.: `'./my-extractor'` or `'other-package'`
+     * @default '@xrnoz/vuetify-svg-icons'
+     */
+    package: string;
   };
   /** Restrict the plugin to run only on `build` or `serve`. */
   apply?: 'build' | 'serve';
@@ -59,6 +64,7 @@ export default (options: PluginOptions) => {
   const showReplacements = options.showReplacements ?? false;
   const matcher = RegExp(`(?:\\$setup\\.)?${options.extractor?.name ?? 'faIconToString'}\\((\\S+)\\)`, 'gm');
   const extractor = options.extractor?.fn ?? faIconToString;
+  const extractorPkg = options.extractor?.package ?? '@xrnoz/vuetify-svg-icons';
 
   let icons: Record<string, any>;
 
@@ -81,7 +87,7 @@ export default (options: PluginOptions) => {
         if (removeImports) {
           const original = showReplacements ? transformed : '';
 
-          transformed = stripImports(transformed, iconPackage);
+          transformed = stripImports(transformed, iconPackage, extractorPkg);
           transformed = transformed.replace(RegExp(`${options.extractor?.name ?? 'faIconToString'},?`, 'm'), '');
 
           if (matches) for (const match of matches) transformed = transformed.replace(RegExp(`${match},?`, 'm'), '');
@@ -100,4 +106,14 @@ export default (options: PluginOptions) => {
   if (options.apply) plugin.apply = options.apply;
 
   return plugin;
+};
+
+export const mdiOptionsPreset: Partial<PluginOptions> = {
+  package: '@mdi/js',
+  iconsExport: 'default',
+  extractor: {
+    fn: embedIcon,
+    name: 'embedIcon',
+    package: '@xrnoz/vuetify-svg-icons',
+  },
 };
