@@ -1,6 +1,6 @@
 {
   "name": "@xrnoz/vuetify-svg-icons",
-  "version": "1.2.0-0",
+  "version": "1.2.0-1",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -55,7 +55,8 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "fmt": "prettier --write .",
-    "test": "ts-node scripts/parse-test.ts"
+    "test": "ts-node scripts/parse-test.ts",
+    "prepublishOnly": "yarn build"
   },
   "description": "Adds support for Font Awesome SVG icons to Vuetify 3.",
   "keywords": [
