@@ -16,7 +16,9 @@ import other4 from 'other4';
 export default {};
 `;
 
-console.log(difference(sample1, stripImports(sample1, '@fortawesome/free-solid-svg-icons')));
+console.log(
+  difference(sample1, stripImports(sample1, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+);
 
 console.log('===============  Sampe 2  ===============');
 
@@ -29,7 +31,9 @@ import svg from '@xrnoz/vuetify-svg-icons';
 export default {};
 `;
 
-console.log(difference(sample2, stripImports(sample2, '@fortawesome/free-solid-svg-icons')));
+console.log(
+  difference(sample2, stripImports(sample2, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+);
 
 console.log('===============  Sampe 3  ===============');
 
@@ -47,7 +51,9 @@ const { faIconToString } = await import('@xrnoz/vuetify-svg-icons');
 export default {};
 `;
 
-console.log(difference(sample3, stripImports(sample3, '@fortawesome/free-solid-svg-icons')));
+console.log(
+  difference(sample3, stripImports(sample3, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+);
 
 console.log('===============  Sampe 4  ===============');
 
@@ -65,7 +71,9 @@ const other4 = await import('other4');
 export default {};
 `;
 
-console.log(difference(sample4, stripImports(sample4, '@fortawesome/free-solid-svg-icons')));
+console.log(
+  difference(sample4, stripImports(sample4, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+);
 
 console.log('===============  Sampe 5  ===============');
 
@@ -84,7 +92,9 @@ const other9 = await import('other9');
 export default {};
 `;
 
-console.log(difference(sample5, stripImports(sample5, '@fortawesome/free-solid-svg-icons')));
+console.log(
+  difference(sample5, stripImports(sample5, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+);
 
 console.log('===============  Sampe 6  ===============');
 
@@ -96,4 +106,6 @@ const other2 = await import('other2');
 export default {};
 `;
 
-console.log(difference(sample6, stripImports(sample6, '@fortawesome/free-solid-svg-icons')));
+console.log(
+  difference(sample6, stripImports(sample6, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+);

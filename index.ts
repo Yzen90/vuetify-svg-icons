@@ -29,7 +29,7 @@ export const SVGIcon: JSXComponent<IconProps> = defineComponent({
     const { attrs } = _ref;
 
     let viewBox = '0 0 24 24';
-    let d = icon.value as string;
+    let d = icon?.value as string;
 
     if (d.startsWith?.('SVG;')) {
       const parts = d.split(';');
