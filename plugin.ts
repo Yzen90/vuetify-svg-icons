@@ -4,7 +4,7 @@ import { parse } from 'path';
 import { createFilter, PluginOption, FilterPattern } from 'vite';
 import c from 'picocolors';
 
-import { faIconToString, embedIcon } from './index.js';
+import { faIconToString, mdiEmbed, mdilEmbed } from './index.js';
 import { stripImports, useReplacer, difference } from './utils.js';
 
 export interface PluginOptions {
@@ -108,12 +108,22 @@ export default (options: PluginOptions) => {
   return plugin;
 };
 
-export const mdiOptionsPreset: Partial<PluginOptions> = {
+export const mdiPreset: Partial<PluginOptions> = {
   package: '@mdi/js',
   iconsExport: 'default',
   extractor: {
-    fn: embedIcon,
-    name: 'embedIcon',
+    fn: mdiEmbed,
+    name: 'mdiEmbed',
+    package: '@xrnoz/vuetify-svg-icons',
+  },
+};
+
+export const mdilPreset: Partial<PluginOptions> = {
+  package: '@mdi/light-js',
+  iconsExport: 'default',
+  extractor: {
+    fn: mdilEmbed,
+    name: 'mdilEmbed',
     package: '@xrnoz/vuetify-svg-icons',
   },
 };

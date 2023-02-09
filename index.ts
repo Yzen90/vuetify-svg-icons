@@ -7,6 +7,8 @@ import type { IconProps, IconSet } from 'vuetify';
 
 export const faIconToString = (icon: IconDefinition) => `SVG;0 0 ${icon.icon[0]} ${icon.icon[1]};${icon.icon[4]}`;
 export const embedIcon = (icon: string) => icon;
+export const mdiEmbed = embedIcon;
+export const mdilEmbed = embedIcon;
 
 export const SVGIcon: JSXComponent<IconProps> = defineComponent({
   name: 'SVGIcon',

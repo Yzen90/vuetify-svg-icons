@@ -1,11 +1,11 @@
 # Font Awesome SVG Icons alternative for Vuetify 3
 
-Alternative to the built-in support for [Font Awesome SVG Icons](https://fontawesome.com/search?o=r&m=free) of Vuetify, allowing the mixed usage of other SVG icon packs as `@mdi/js`.
+Alternative to the built-in support for [Font Awesome SVG Icons](https://fontawesome.com/search?o=r&m=free) of Vuetify, allowing the mixed usage of other SVG icon packs as `@mdi/js`, `@mdi/light-js`, etc.
 
 This package is composed of three main parts:
 
 1. A Vue component for Vuetify based on the one from the `mdi` IconPack exported by `'vuetify/iconsets/mdi-svg'`, that gets the viewbox and path data from a string with the format: `'SVG;<view box>;<path data>'` if the string does not start with `'SVG;'`, it just uses the string as the path data like `mdi` does.
-2. The function `faIconToString` that turns an `IconDefinition` object thats represents a Font Awesome icon, to a string literal with the format mentioned before. The combination of the component and this function allows the usage of Font Awesome SVG icons in any Vuetify component that uses icons.
+2. The function `faIconToString` that turns an `IconDefinition` object thats represents a Font Awesome icon, to a string literal with the previously mentioned format. The combination of the component and this function allows the usage of Font Awesome SVG icons in any Vuetify component that uses icons.
 3. A Vite plugin that replaces the calls to `faIconToString` with it's resulting string to optimize the usage of the icons. By default it also removes the first import to `@xrnoz/vuetify-svg-icons` and `@fortawesome/free-solid-svg-icons`, as after replacing the function calls the imports are no longer neccesary.
 
 - [Usage (Examples in TypeScript)](#usage-examples-in-typescript)
@@ -14,7 +14,7 @@ This package is composed of three main parts:
   - [3. Configure Vuetify](#3-configure-vuetify)
   - [4. Use the icons](#4-use-the-icons)
   - [5. (Optional) Configure the plugin](#5-optional-configure-the-plugin)
-    - [Applying the plugin to `@mdi/js` icons:](#applying-the-plugin-to-mdijs-icons)
+    - [Applying the plugin to `@mdi/js` and/or `@mdi/light-js` icons:](#applying-the-plugin-to-mdijs-andor-mdilight-js-icons)
       - [`icons.ts`:](#iconsts)
       - [`vite.config.ts`:](#viteconfigts)
 - [Plugin options](#plugin-options)
@@ -118,19 +118,22 @@ export default defineConfig({
 });
 ```
 
-#### Applying the plugin to `@mdi/js` icons:
+#### Applying the plugin to `@mdi/js` and/or `@mdi/light-js` icons:
 
 ##### `icons.ts`:
 
 ```typescript
 import { aliases as defaultAliases  } from 'vuetify/iconsets/mdi-svg';
+
 import * as mdi from '@mdi/js';
 // OR: import { mdiThumbDown } from '@mdi/js';
+import * as mdil from '@mdi/light-js';
+// OR: import { mdilMagnify } from '@mdi/light-js';
 
 // import { fas } from '@fortawesome/free-solid-svg-icons';
 
-// `embedIcon` just serves to mark the icon for embedding:
-import { faIconToString, embedIcon } from '@xrnoz/vuetify-svg-icons';
+// `mdiEmbed` and `mdilEmbed` serve to flag the icon for embedding:
+import { mdiEmbed, mdilEmbed /* ,faIconToString */ } from '@xrnoz/vuetify-svg-icons';
 
 import type { IconAliases } from 'vuetify';
 
@@ -138,7 +141,10 @@ export const aliases: IconAliases = {
   ...defaultAliases,
 
   // mdi
-  dislike: embedIcon(mdi.mdiThumbDown),
+  dislike: mdiEmbed(mdi.mdiThumbDown),
+
+  // mdil
+  search: mdilEmbed(mdil.mdilMagnify) 
 
   // fa
   // like: faIconToString(fas.faHeart),
@@ -151,14 +157,19 @@ export const aliases: IconAliases = {
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
-import embedIcons, { mdiOptionsPreset } from '@xrnoz/vuetify-svg-icons/plugin';
+import embedIcons, { mdiPreset, mdilPreset } from '@xrnoz/vuetify-svg-icons/plugin';
 
 export default defineConfig({
   plugins: [
     vue({}),
     vuetify({}),
     embedIcons({
-      ...mdiOptionsPreset,
+      ...mdiPreset,
+      include: './src/icons.ts',
+      showReplacements: true,
+    }),
+    embedIcons({
+      ...mdilPreset,
       include: './src/icons.ts',
       showReplacements: true,
     }),
@@ -176,9 +187,12 @@ Option           | Required | Default                               | Descriptio
 include          | yes      |                                       | Target files for the plugin.
 package          | no       | `'@fortawesome/free-solid-svg-icons'` | Package for icon extraction.
 iconsExport      | no       | `'fas'`                               | Export of `options.package` that provides the icons.
-removeImports    | no       | `true`                                | Whether to remove the first import of `@xrnoz/vuetify-svg-icons` and of `options.package` from the target.
+removeImports    | no       | `true`                                | Whether to remove the first import of `options.extractor.package` (default: '@xrnoz/vuetify-svg-icons') and of `options.package` (default: '@fortawesome/free-solid-svg-icons') from the target..
 showReplacements | no       | `false`                               | Whether to show replacement information.
-extractor        | no       | `faIconToString`                      | Function to get the SVG data from the icon object as a string.
+extractor        | no       |                                       |
+extractor.fn     |          | `faIconToString`                      | Function to get the SVG data from the icon object as a string.
+extractor.name   |          | `'faIconToString'`                    | Name of the function that on each call will be replaced with a string literal with the SVG data of the icon.
+extractor.package |         | `'@xrnoz/vuetify-svg-icons'`          | Package that exports the icon extractor as it is imported in the target, e.g.: `'./my-extractor'` or `'other-package'`
 apply            | no       |                                       | Whether to restrict the plugin to run only on `build` or `serve`.
 dumpFile         | no       |                                       | File to dump the transform results for debugging purposes.
 
