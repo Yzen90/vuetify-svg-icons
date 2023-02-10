@@ -62,7 +62,7 @@ export default (options: PluginOptions) => {
   const iconsExport = options.iconsExport ?? 'fas';
   const removeImports = options.removeImports ?? true;
   const showReplacements = options.showReplacements ?? false;
-  const matcher = RegExp(`(?:\\$setup\\.)?${options.extractor?.name ?? 'faIconToString'}\\((\\S+)\\)`, 'gm');
+  const matcher = RegExp(`(?:\\$setup\\.)?${options.extractor?.name ?? 'fasEmbed'}\\((\\S+)\\)`, 'gm');
   const extractor = options.extractor?.fn ?? fasEmbed;
   const extractorPkg = options.extractor?.package ?? '@xrnoz/vuetify-svg-icons';
 
