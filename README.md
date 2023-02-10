@@ -8,13 +8,15 @@ This package is composed of three main parts:
 2. The function `faIconToString` that turns an `IconDefinition` object thats represents a Font Awesome icon, to a string literal with the previously mentioned format. The combination of the component and this function allows the usage of Font Awesome SVG icons in any Vuetify component that uses icons.
 3. A Vite plugin that replaces the calls to `fasEmbed` with it's resulting string to optimize the usage of the icons. By default it also removes the first import to `@xrnoz/vuetify-svg-icons` and `@fortawesome/free-solid-svg-icons`, as after replacing the function calls the imports are no longer neccesary.
 
+**Table of contents**
+
 - [Usage (Examples in TypeScript)](#usage-examples-in-typescript)
   - [1. Add the dependencies:](#1-add-the-dependencies)
   - [2. Create a file `icons.ts`:](#2-create-a-file-iconsts)
   - [3. Configure Vuetify](#3-configure-vuetify)
   - [4. Use the icons](#4-use-the-icons)
   - [5. (Optional) Configure the plugin](#5-optional-configure-the-plugin)
-    - [Applying the plugin to `@mdi/js` and/or `@mdi/light-js` icons:](#applying-the-plugin-to-mdijs-andor-mdilight-js-icons)
+  - [5.1. Applying the plugin to `@mdi/js`, `@mdi/light-js` and/or `@fortawesome/free-regular-svg-icons` icons:](#51-applying-the-plugin-to-mdijs-mdilight-js-andor-fortawesomefree-regular-svg-icons-icons)
       - [`icons.ts`:](#iconsts)
       - [`vite.config.ts`:](#viteconfigts)
 - [Plugin options](#plugin-options)
@@ -222,8 +224,8 @@ iconsExport      | no       | `'fas'`                               | Export of 
 removeImports    | no       | `true`                                | Whether to remove the first import of `options.extractor.package` (default: '@xrnoz/vuetify-svg-icons') and of `options.package` (default: '@fortawesome/free-solid-svg-icons') from the target..
 showReplacements | no       | `false`                               | Whether to show replacement information.
 extractor        | no       |                                       |
-extractor.fn     |          | `faIconToString`                      | Function to get the SVG data from the icon object as a string.
-extractor.name   |          | `'faIconToString'`                    | Name of the function that on each call will be replaced with a string literal with the SVG data of the icon.
+extractor.fn     |          | `fasEmbed`                            | Function to get the SVG data from the icon object as a string.
+extractor.name   |          | `'fasEmbed'`                          | Name of the function that on each call will be replaced with a string literal with the SVG data of the icon.
 extractor.package |         | `'@xrnoz/vuetify-svg-icons'`          | Package that exports the icon extractor as it is imported in the target, e.g.: `'./my-extractor'` or `'other-package'`
 apply            | no       |                                       | Whether to restrict the plugin to run only on `build` or `serve`.
 dumpFile         | no       |                                       | File to dump the transform results for debugging purposes.
