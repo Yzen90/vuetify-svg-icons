@@ -6,7 +6,7 @@ This package is composed of three main parts:
 
 1. A Vue component for Vuetify based on the one from the `mdi` IconPack exported by `'vuetify/iconsets/mdi-svg'`, that gets the viewbox and path data from a string with the format: `'SVG;<view box>;<path data>'` if the string does not start with `'SVG;'`, it just uses the string as the path data like `mdi` does.
 2. The function `faIconToString` that turns an `IconDefinition` object thats represents a Font Awesome icon, to a string literal with the previously mentioned format. The combination of the component and this function allows the usage of Font Awesome SVG icons in any Vuetify component that uses icons.
-3. A Vite plugin that replaces the calls to `faIconToString` with it's resulting string to optimize the usage of the icons. By default it also removes the first import to `@xrnoz/vuetify-svg-icons` and `@fortawesome/free-solid-svg-icons`, as after replacing the function calls the imports are no longer neccesary.
+3. A Vite plugin that replaces the calls to `fasEmbed` with it's resulting string to optimize the usage of the icons. By default it also removes the first import to `@xrnoz/vuetify-svg-icons` and `@fortawesome/free-solid-svg-icons`, as after replacing the function calls the imports are no longer neccesary.
 
 - [Usage (Examples in TypeScript)](#usage-examples-in-typescript)
   - [1. Add the dependencies:](#1-add-the-dependencies)
@@ -33,10 +33,18 @@ yarn add @xrnoz/vuetify-svg-icons @fortawesome/free-solid-svg-icons @mdi/js
 ```typescript
 import { aliases as defaultAliases  } from 'vuetify/iconsets/mdi-svg';
 import { mdiThumbDown } from '@mdi/js';
+
 import { fas } from '@fortawesome/free-solid-svg-icons';
-// OR: import fas from '@fortawesome/free-solid-svg-icons';
-// OR: import { faHeart } from '@fortawesome/free-solid-svg-icons';
+/*
+  OR: import fas from '@fortawesome/free-solid-svg-icons';
+  OR: import { faHeart } from '@fortawesome/free-solid-svg-icons';
+*/
+
 import { faIconToString } from '@xrnoz/vuetify-svg-icons';
+/*
+  To use the plugin, import instead `fasEmbed`:
+    import { fasEmbed } from '@xrnoz/vuetify-svg-icons';
+*/
 
 import type { IconAliases } from 'vuetify';
 
@@ -48,6 +56,10 @@ export const aliases: IconAliases = {
 
   // fa
   like: faIconToString(fas.faHeart),
+  /*
+    Use `fasEmbed` instead if using the plugin:
+      like: fasEmbed(fas.faHeart),
+  */
 };
 ```
 
@@ -85,10 +97,12 @@ vue.mount('#app');
     <!-- `like` alias defined in icons.ts -->
     <v-btn color="blue" append-icon="$like">Like</v-btn>
   </v-row>
+
   <v-row>
     <!-- `dislike` alias defined in icons.ts -->
     <v-btn color="red" append-icon="$dislike">Dislike</v-btn>
   </v-row>
+
   <v-row>
     <!-- usage on the fly -->
     <v-btn color="yellow" :append-icon="faIconToString(faFaceSurprise)">Wow!</v-btn>
@@ -118,7 +132,7 @@ export default defineConfig({
 });
 ```
 
-#### Applying the plugin to `@mdi/js` and/or `@mdi/light-js` icons:
+### 5.1. Applying the plugin to `@mdi/js`, `@mdi/light-js` and/or `@fortawesome/free-regular-svg-icons` icons:
 
 ##### `icons.ts`:
 
@@ -130,10 +144,11 @@ import * as mdi from '@mdi/js';
 import * as mdil from '@mdi/light-js';
 // OR: import { mdilMagnify } from '@mdi/light-js';
 
-// import { fas } from '@fortawesome/free-solid-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
+import { far } from '@fortawesome/free-regular-svg-icons';
 
 // `mdiEmbed` and `mdilEmbed` serve to flag the icon for embedding:
-import { mdiEmbed, mdilEmbed /* ,faIconToString */ } from '@xrnoz/vuetify-svg-icons';
+import { mdiEmbed, mdilEmbed, fasEmbed, farEmbed } from '@xrnoz/vuetify-svg-icons';
 
 import type { IconAliases } from 'vuetify';
 
@@ -146,8 +161,11 @@ export const aliases: IconAliases = {
   // mdil
   search: mdilEmbed(mdil.mdilMagnify) 
 
-  // fa
-  // like: faIconToString(fas.faHeart),
+  // fas
+  like: fasEmbed(fas.faHeart),
+
+  // far
+  bell: farEmbed(far.faBell),
 };
 ```
 
@@ -157,24 +175,38 @@ export const aliases: IconAliases = {
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
-import embedIcons, { mdiPreset, mdilPreset } from '@xrnoz/vuetify-svg-icons/plugin';
+import embedIcons, { farPreset, mdiPreset, mdilPreset } from '@xrnoz/vuetify-svg-icons/plugin';
+
+// Remove `showReplacements` if the plugin is working:
 
 export default defineConfig({
   plugins: [
     vue({}),
     vuetify({}),
+
+    // Embed Font Awesome solid icons:
+    embedIcons({ include: './src/icons.ts', showReplacements: true }),
+    
+    // Embed Font Awesome regular icons:
+    embedIcons({
+      ...farPreset,
+      include: './src/icons.ts',
+      showReplacements: true,
+    }),
+    
+    // Embed MDI icons:
     embedIcons({
       ...mdiPreset,
       include: './src/icons.ts',
       showReplacements: true,
     }),
+    
+    // Embed MDI Light icons:
     embedIcons({
       ...mdilPreset,
       include: './src/icons.ts',
       showReplacements: true,
     }),
-    // To also embed Font Awesome icons:
-    // embedIcons({ include: './src/icons.ts', showReplacements: true }),
   ],
 });
 ```

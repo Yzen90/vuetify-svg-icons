@@ -9,6 +9,8 @@ export const faIconToString = (icon: IconDefinition) => `SVG;0 0 ${icon.icon[0]}
 export const embedIcon = (icon: string) => icon;
 export const mdiEmbed = embedIcon;
 export const mdilEmbed = embedIcon;
+export const fasEmbed = faIconToString;
+export const farEmbed = faIconToString;
 
 export const SVGIcon: JSXComponent<IconProps> = defineComponent({
   name: 'SVGIcon',

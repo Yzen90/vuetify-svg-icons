@@ -4,7 +4,7 @@ import { parse } from 'path';
 import { createFilter, PluginOption, FilterPattern } from 'vite';
 import c from 'picocolors';
 
-import { faIconToString, mdiEmbed, mdilEmbed } from './index.js';
+import { mdiEmbed, mdilEmbed, fasEmbed, farEmbed } from './index.js';
 import { stripImports, useReplacer, difference } from './utils.js';
 
 export interface PluginOptions {
@@ -34,12 +34,12 @@ export interface PluginOptions {
   extractor?: {
     /**
      * Function to get the SVG data from the icon object as a string.
-     * @default faIconToString
+     * @default fasEmbed
      */
     fn: Function;
     /**
      * Name of the function that on each call will be replaced with a string literal with the SVG data of the icon.
-     * @default 'faIconToString'
+     * @default 'fasEmbed'
      */
     name: string;
     /**
@@ -63,7 +63,7 @@ export default (options: PluginOptions) => {
   const removeImports = options.removeImports ?? true;
   const showReplacements = options.showReplacements ?? false;
   const matcher = RegExp(`(?:\\$setup\\.)?${options.extractor?.name ?? 'faIconToString'}\\((\\S+)\\)`, 'gm');
-  const extractor = options.extractor?.fn ?? faIconToString;
+  const extractor = options.extractor?.fn ?? fasEmbed;
   const extractorPkg = options.extractor?.package ?? '@xrnoz/vuetify-svg-icons';
 
   let icons: Record<string, any>;
@@ -106,6 +106,16 @@ export default (options: PluginOptions) => {
   if (options.apply) plugin.apply = options.apply;
 
   return plugin;
+};
+
+export const farPreset: Partial<PluginOptions> = {
+  package: '@fortawesome/free-regular-svg-icons',
+  iconsExport: 'far',
+  extractor: {
+    fn: farEmbed,
+    name: 'farEmbed',
+    package: '@xrnoz/vuetify-svg-icons',
+  },
 };
 
 export const mdiPreset: Partial<PluginOptions> = {
