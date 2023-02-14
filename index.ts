@@ -39,7 +39,7 @@ export const SVGIcon: JSXComponent<IconProps> = defineComponent({
     const { icon, tag } = toRefs(props);
     const { attrs } = _ref;
 
-    const svgProps: Record<string, string> = {
+    const svgProps: Record<string, any> = {
       class: 'v-icon__svg',
       xmlns: 'http://www.w3.org/2000/svg',
       viewBox: '0 0 24 24',
@@ -54,8 +54,15 @@ export const SVGIcon: JSXComponent<IconProps> = defineComponent({
       svgProps['viewBox'] = parts[1] ?? '';
       d = parts[2] ?? '';
 
-      if (typeof parts[3] === 'string') svgProps['fill'] = parts[3];
-      if (typeof parts[4] === 'string') svgProps['stroke-width'] = parts[4];
+      if (typeof parts[3] === 'string') {
+        svgProps['fill'] = parts[3];
+        svgProps['style'] = `fill: ${parts[3]};`;
+      }
+
+      if (typeof parts[4] === 'string') {
+        svgProps['stroke-width'] = parts[4];
+        svgProps['stroke'] = 'currentColor';
+      }
     }
 
     return () => {
