@@ -6,11 +6,18 @@ import type { IconDefinition } from '@fortawesome/fontawesome-common-types';
 import type { IconProps, IconSet } from 'vuetify';
 
 export const faIconToString = (icon: IconDefinition) => `SVG;0 0 ${icon.icon[0]} ${icon.icon[1]};${icon.icon[4]}`;
+export const fasEmbed = faIconToString;
+export const farEmbed = faIconToString;
+
 export const embedIcon = (icon: string) => icon;
 export const mdiEmbed = embedIcon;
 export const mdilEmbed = embedIcon;
-export const fasEmbed = faIconToString;
-export const farEmbed = faIconToString;
+
+export const hioToString = (icon: string) => `SVG;0 0 24 24;${icon};none;1.5`;
+export const himToString = (icon: string) => `SVG;0 0 20 20;${icon}`;
+export const hisEmbed = embedIcon;
+export const hioEmbed = hioToString;
+export const himEmbed = himToString;
 
 export const SVGIcon: JSXComponent<IconProps> = defineComponent({
   name: 'SVGIcon',
@@ -32,13 +39,23 @@ export const SVGIcon: JSXComponent<IconProps> = defineComponent({
     const { icon, tag } = toRefs(props);
     const { attrs } = _ref;
 
-    let viewBox = '0 0 24 24';
+    const svgProps: Record<string, string> = {
+      class: 'v-icon__svg',
+      xmlns: 'http://www.w3.org/2000/svg',
+      viewBox: '0 0 24 24',
+      role: 'img',
+      'aria-hidden': 'true',
+    };
+
     let d = icon?.value as string;
 
     if (d.startsWith?.('SVG;')) {
       const parts = d.split(';');
-      viewBox = parts[1] ?? '';
+      svgProps['viewBox'] = parts[1] ?? '';
       d = parts[2] ?? '';
+
+      if (typeof parts[3] === 'string') svgProps['fill'] = parts[3];
+      if (typeof parts[4] === 'string') svgProps['stroke-width'] = parts[4];
     }
 
     return () => {
@@ -48,19 +65,7 @@ export const SVGIcon: JSXComponent<IconProps> = defineComponent({
           style: null,
         }),
         {
-          default: () => [
-            createVNode(
-              'svg',
-              {
-                class: 'v-icon__svg',
-                xmlns: 'http://www.w3.org/2000/svg',
-                viewBox,
-                role: 'img',
-                'aria-hidden': 'true',
-              },
-              [createVNode('path', { d }, null)],
-            ),
-          ],
+          default: () => [createVNode('svg', svgProps, [createVNode('path', { d }, null)])],
         },
       );
     };

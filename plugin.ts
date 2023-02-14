@@ -4,7 +4,7 @@ import { parse } from 'path';
 import { createFilter, PluginOption, FilterPattern } from 'vite';
 import c from 'picocolors';
 
-import { mdiEmbed, mdilEmbed, fasEmbed, farEmbed } from './index.js';
+import { mdiEmbed, mdilEmbed, fasEmbed, farEmbed, hisEmbed, hioEmbed, himEmbed } from './index.js';
 import { stripImports, useReplacer, difference } from './utils.js';
 
 export interface PluginOptions {
@@ -134,6 +134,36 @@ export const mdilPreset: Partial<PluginOptions> = {
   extractor: {
     fn: mdilEmbed,
     name: 'mdilEmbed',
+    package: '@xrnoz/vuetify-svg-icons',
+  },
+};
+
+export const hisPreset: Partial<PluginOptions> = {
+  package: '@xrnoz/heroicons-js',
+  iconsExport: 'his',
+  extractor: {
+    fn: hisEmbed,
+    name: 'hisEmbed',
+    package: '@xrnoz/vuetify-svg-icons',
+  },
+};
+
+export const hioPreset: Partial<PluginOptions> = {
+  package: '@xrnoz/heroicons-js',
+  iconsExport: 'hio',
+  extractor: {
+    fn: hioEmbed,
+    name: 'hioEmbed',
+    package: '@xrnoz/vuetify-svg-icons',
+  },
+};
+
+export const himPreset: Partial<PluginOptions> = {
+  package: '@xrnoz/heroicons-js',
+  iconsExport: 'him',
+  extractor: {
+    fn: himEmbed,
+    name: 'himEmbed',
     package: '@xrnoz/vuetify-svg-icons',
   },
 };
