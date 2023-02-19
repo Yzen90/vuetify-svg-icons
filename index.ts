@@ -55,17 +55,17 @@ export const SVGIcon: JSXComponent<IconProps> = defineComponent({
       svgProps['viewBox'] = parts[1] ?? '';
       d = parts[2] ?? '';
 
-      if (typeof parts[3] === 'string') {
+      if (parts[3] && parts[3].length > 0) {
         svgProps['fill'] = parts[3];
         svgProps['style'] = `fill: ${parts[3]};`;
       }
 
-      if (typeof parts[4] === 'string') {
+      if (parts[4] && parts[4].length > 0) {
         svgProps['stroke-width'] = parts[4];
         svgProps['stroke'] = 'currentColor';
       }
 
-      if (typeof parts[5] === 'string') {
+      if (parts[5] && parts[5].length > 0) {
         svgProps['fill-rule'] = parts[5];
       }
     }
