@@ -62,7 +62,8 @@ export default (options: PluginOptions) => {
   const iconsExport = options.iconsExport ?? 'fas';
   const removeImports = options.removeImports ?? true;
   const showReplacements = options.showReplacements ?? false;
-  const matcher = RegExp(`(?:\\$setup\\.)?${options.extractor?.name ?? 'fasEmbed'}\\((\\S+)\\)`, 'gm');
+  const defaultFnName = 'fasEmbed';
+  const matcher = RegExp(`(?:\\$setup\\.)?${options.extractor?.name ?? defaultFnName}\\((\\S+)\\)`, 'gm');
   const extractor = options.extractor?.fn ?? fasEmbed;
   const extractorPkg = options.extractor?.package ?? '@xrnoz/vuetify-svg-icons';
 
@@ -88,7 +89,7 @@ export default (options: PluginOptions) => {
           const original = showReplacements ? transformed : '';
 
           transformed = stripImports(transformed, iconPackage, extractorPkg);
-          transformed = transformed.replace(RegExp(`${options.extractor?.name ?? 'faIconToString'},?`, 'm'), '');
+          transformed = transformed.replace(RegExp(`${options.extractor?.name ?? defaultFnName},?`, 'm'), '');
 
           if (matches) for (const match of matches) transformed = transformed.replace(RegExp(`${match},?`, 'm'), '');
 

@@ -13,9 +13,10 @@ export const embedIcon = (icon: string) => icon;
 export const mdiEmbed = embedIcon;
 export const mdilEmbed = embedIcon;
 
+export const hisToString = (icon: string) => `SVG;0 0 24 24;${icon};;;evenodd`;
 export const hioToString = (icon: string) => `SVG;0 0 24 24;${icon};none;1.5`;
 export const himToString = (icon: string) => `SVG;0 0 20 20;${icon}`;
-export const hisEmbed = embedIcon;
+export const hisEmbed = hisToString;
 export const hioEmbed = hioToString;
 export const himEmbed = himToString;
 
@@ -62,6 +63,10 @@ export const SVGIcon: JSXComponent<IconProps> = defineComponent({
       if (typeof parts[4] === 'string') {
         svgProps['stroke-width'] = parts[4];
         svgProps['stroke'] = 'currentColor';
+      }
+
+      if (typeof parts[5] === 'string') {
+        svgProps['fill-rule'] = parts[5];
       }
     }
 

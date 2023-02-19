@@ -4,10 +4,11 @@ Alternative to the built-in support for [Font Awesome SVG Icons](https://fontawe
 
 This package is composed of three main parts:
 
-1. A Vue component for Vuetify based on the one from the `mdi` IconPack exported by `'vuetify/iconsets/mdi-svg'`, that gets the viewbox, path data, fill and stroke width from a string with the format: `'SVG;<view box>;<path data>;<fill>;<stroke width>'` if the string does not start with `'SVG;'`, it just uses the string as the path data like `mdi` does.
+1. A Vue component for Vuetify based on the one from the `mdi` IconPack exported by `'vuetify/iconsets/mdi-svg'`, that gets the viewbox, path data, fill and stroke width from a string with the format: `'SVG;<view box>;<path data>;<fill>;<stroke width>;<fill rule>'` if the string does not start with `'SVG;'`, it just uses the string as the path data like `mdi` does.
 2. Functions that output the the previously mentioned format. The combination of the component and this functions allows the usage of icons from different packages in any Vuetify component that uses icons.
    1. `faIconToString` to use a `IconDefinition` object representing a Font Awesome icon.
    2. `hioToString` to use [heroicons](https://heroicons.com/) outline variant from `@xrnoz/heroicons-js`.
+   3. `hisToString` to use heroicons solid variant from `@xrnoz/heroicons-js`.
    3. `himToString` to use heroicons mini variant from `@xrnoz/heroicons-js`.
 3. A Vite plugin that replaces the calls of provided embedding functions with it's resulting string to optimize the usage of the icons. By default it also removes the first import to `@xrnoz/vuetify-svg-icons` and `@fortawesome/free-solid-svg-icons`, as after replacing the function calls the imports are no longer neccesary.
 
@@ -46,7 +47,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 
 import { his, hio, him } from '@xrnoz/heroicons-js';
 
-import { faIconToString } from '@xrnoz/vuetify-svg-icons';
+import { faIconToString, hisToString, hioToString, himToString } from '@xrnoz/vuetify-svg-icons';
 /*
   To use the plugin, import instead `fasEmbed`:
     import { fasEmbed } from '@xrnoz/vuetify-svg-icons';
@@ -74,7 +75,11 @@ export const aliases: IconAliases = {
   notifications: faIconToString(far.faBell),
 
   // heroicons solid
-  setting: his.adjustmentsHorizontal,
+  settings: hisToString(his.adjustmentsHorizontal),
+  /*
+    Use `hisEmbed` instead if using the plugin:
+      setting: hisEmbed(hio.adjustmentsHorizontal),
+  */
 
   // heroicons outline
   launch: hioToString(hio.rocketLaunch),
