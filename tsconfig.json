@@ -6,7 +6,7 @@
     "outDir": "dist",
     "noImplicitReturns": false
   },
-  "files": ["index.ts", "plugin.ts", "vuetify.d.ts"],
+  "files": ["index.ts", "plugin.ts"],
   "exclude": ["node_modules"],
   "ts-node": {
     "esm": true

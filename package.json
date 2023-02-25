@@ -25,19 +25,12 @@
     "picocolors": "^1.0.0"
   },
   "peerDependencies": {
-    "@fortawesome/free-solid-svg-icons": "6.x || 5.x",
     "vite": "3.x || 4.x",
     "vue": "3.x",
     "vuetify": "3.x"
   },
-  "peerDependenciesMeta": {
-    "@fortawesome/free-solid-svg-icons": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@fortawesome/fontawesome-common-types": "6.3.0",
-    "@fortawesome/free-solid-svg-icons": "6.3.0",
     "@tsconfig/node18-strictest-esm": "1.0.1",
     "@types/estree": "1.0.0",
     "@types/node": "18.14.0",
@@ -50,10 +43,11 @@
     "vuetify": "3.1.6"
   },
   "engines": {
-    "yarn": ">=1.22.19"
+    "yarn": "1.22.19"
   },
   "scripts": {
     "build": "rimraf dist && tsc",
+    "dev:check": "tsc --noEmit",
     "fmt": "prettier --write .",
     "test": "ts-node scripts/parse-test.ts",
     "prepublishOnly": "yarn build"

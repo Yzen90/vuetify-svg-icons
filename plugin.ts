@@ -4,22 +4,18 @@ import { parse } from 'path';
 import { createFilter, PluginOption, FilterPattern } from 'vite';
 import c from 'picocolors';
 
-import { mdiEmbed, mdilEmbed, fasEmbed, farEmbed, hisEmbed, hioEmbed, himEmbed } from './index.js';
 import { stripImports, useReplacer, difference } from './utils.js';
+
+export interface ExtractionOptions {
+  /** Package that provides the icons that will be embeded. */
+  package: string;
+  /** Export of `options.package` that provides the icons. */
+  iconsExport: string;
+}
 
 export interface PluginOptions {
   /** Target files for the plugin. */
   include: FilterPattern;
-  /**
-   * Package for icon extraction.
-   * @default '@fortawesome/free-solid-svg-icons'
-   */
-  package?: string;
-  /**
-   * Export of `options.package` that provides the icons.
-   * @default 'fas'
-   */
-  iconsExport?: string;
   /**
    * Remove the first import of `options.extractor.package` (default: '@xrnoz/vuetify-svg-icons') and of `options.package` (default: '@fortawesome/free-solid-svg-icons') from the target.
    * @default true
@@ -109,62 +105,56 @@ export default (options: PluginOptions) => {
   return plugin;
 };
 
-export const farPreset: Partial<PluginOptions> = {
+export const farPreset: ExtractionOptions = {
   package: '@fortawesome/free-regular-svg-icons',
   iconsExport: 'far',
   extractor: {
-    fn: farEmbed,
-    name: 'farEmbed',
+    name: 'useFAR',
     package: '@xrnoz/vuetify-svg-icons',
   },
 };
 
-export const mdiPreset: Partial<PluginOptions> = {
+export const mdiPreset: ExtractionOptions = {
   package: '@mdi/js',
   iconsExport: 'default',
   extractor: {
-    fn: mdiEmbed,
-    name: 'mdiEmbed',
+    name: 'useMDI',
     package: '@xrnoz/vuetify-svg-icons',
   },
 };
 
-export const mdilPreset: Partial<PluginOptions> = {
+export const mdilPreset: ExtractionOptions = {
   package: '@mdi/light-js',
   iconsExport: 'default',
   extractor: {
-    fn: mdilEmbed,
-    name: 'mdilEmbed',
+    name: 'useMDIL',
     package: '@xrnoz/vuetify-svg-icons',
   },
 };
 
-export const hisPreset: Partial<PluginOptions> = {
+export const hisPreset: ExtractionOptions = {
   package: '@xrnoz/heroicons-js',
   iconsExport: 'his',
   extractor: {
-    fn: hisEmbed,
-    name: 'hisEmbed',
+    name: 'useHIS',
     package: '@xrnoz/vuetify-svg-icons',
   },
 };
 
-export const hioPreset: Partial<PluginOptions> = {
+export const hioPreset: ExtractionOptions = {
   package: '@xrnoz/heroicons-js',
   iconsExport: 'hio',
   extractor: {
-    fn: hioEmbed,
-    name: 'hioEmbed',
+    name: 'useHIO',
     package: '@xrnoz/vuetify-svg-icons',
   },
 };
 
-export const himPreset: Partial<PluginOptions> = {
+export const himPreset: ExtractionOptions = {
   package: '@xrnoz/heroicons-js',
   iconsExport: 'him',
   extractor: {
-    fn: himEmbed,
-    name: 'himEmbed',
+    name: 'useHIM',
     package: '@xrnoz/vuetify-svg-icons',
   },
 };
