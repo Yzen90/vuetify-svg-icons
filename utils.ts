@@ -81,7 +81,7 @@ export const difference = (original: string, transformed: string) =>
     bColor: c.yellow,
     bIndicator: '  +',
     commonIndicator: '   ',
-    contextLines: 2,
+    contextLines: 0,
     expand: false,
   })?.replace(/^[^@]*@@[^,]+,[^,]+,[^,]+@@[^(?:\r?\n|\r)]*$(?:\r?\n|\r)?/gm, '');
 

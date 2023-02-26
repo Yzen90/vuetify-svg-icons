@@ -172,7 +172,7 @@ export default (options: IconEmbedOptions) => {
             transformed = transformed.replace(RegExp(`${extractorPkg},?`, 'm'), '');
             if (matches) for (const match of matches) transformed = transformed.replace(RegExp(`${match},?`, 'm'), '');
 
-            if (showReplacements) console.info(difference(original, transformed));
+            if (showReplacements && original !== transformed) console.info(difference(original, transformed));
           }
         }
 
