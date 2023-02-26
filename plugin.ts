@@ -152,7 +152,7 @@ export default (options: IconEmbedOptions) => {
 
           const matcher = RegExp(`(?:\\$setup\\.)?${extractor}\\((\\S+)\\)`, 'gm');
 
-          transformed = code.replace(matcher, useReplacer(showReplacements, extractorFn, icons, matches));
+          transformed = transformed.replace(matcher, useReplacer(showReplacements, extractorFn, icons, matches));
 
           if (removeImports) {
             const original = showReplacements ? transformed : '';

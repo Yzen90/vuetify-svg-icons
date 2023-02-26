@@ -29,6 +29,7 @@ This package is composed of three main parts:
       - [`icons.ts`:](#iconsts)
       - [`vite.config.ts`:](#viteconfigts)
 - [Plugin options](#plugin-options)
+  - [`ExtractionOptions`](#extractionoptions)
 - [Resources](#resources)
 
 ## Usage (Examples in TypeScript)
@@ -241,6 +242,20 @@ removeImports    | no       | `true`                                | Whether to
 showReplacements | no       | `false`                               | Whether to show replacement information.
 apply            | no       |                                       | Whether to restrict the plugin to run only on `build` or `serve`.
 dumpFile         | no       |                                       | File to dump the transform results for debugging purposes.
+
+### `ExtractionOptions`
+
+The default `embed` option of the plugin is the `'fas'` preset equal to this `ExtractionOptions` object:
+
+```typescript
+export const fasPreset: ExtractionOptions = {
+  iconsPkg: '@fortawesome/free-solid-svg-icons',
+  iconsExport: 'fas',
+  extractor: 'useFAS',
+  extractorPkg: '@xrnoz/vuetify-svg-icons',
+};
+```
+
 
 ## Resources
 
