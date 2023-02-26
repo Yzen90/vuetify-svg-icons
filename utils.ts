@@ -17,12 +17,12 @@ const getLocation = (ancestors: Node[]): Location | null => {
   return null;
 };
 
-export const stripImports = (code: string, iconPackage: string, extractorPkg: string) => {
+export const stripImports = (code: string, iconPackage?: string, extractorPkg?: string) => {
   const ast = parse(code, { ecmaVersion: 'latest', sourceType: 'module' });
 
   const imports: Location[] = [];
-  let packageFound = false;
-  let iconPackageFound = false;
+  let packageFound = !extractorPkg;
+  let iconPackageFound = !iconPackage;
 
   try {
     simple(ast, {

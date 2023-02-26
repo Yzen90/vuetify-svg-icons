@@ -1,16 +1,21 @@
 # SVG icons usage alternative for Vuetify 3 and icon embedding
 
-Alternative to the built-in support for [Font Awesome SVG Icons](https://fontawesome.com/search?o=r&m=free) of Vuetify, allowing the mixed usage of other SVG icon packs as `@mdi/js`, `@mdi/light-js` and [heroicons](https://heroicons.com/).
+Allows the mixed usage of these icon packages and the embedding of icons:
+- [Font Awesome Icons free (solid and regular variants)](https://fontawesome.com/search?o=r&m=free)
+- [Material Design Icons](https://pictogrammers.com/library/mdi/)
+- [Material Design Icons Light](https://pictogrammers.com/library/mdil/)
+- [heroicons (outline, solid and mini variants)](https://heroicons.com/)
+- Others can be added by creating custom `ExtractionOptions`.
 
 This package is composed of three main parts:
 
-1. A Vue component for Vuetify based on the one from the `mdi` IconPack exported by `'vuetify/iconsets/mdi-svg'`, that gets the viewbox, path data, fill and stroke width from a string with the format: `'SVG;<view box>;<path data>;<fill>;<stroke width>;<fill rule>'` if the string does not start with `'SVG;'`, it just uses the string as the path data like `mdi` does.
+1. A Vue component for Vuetify based on the one from the `mdi` IconPack exported by `'vuetify/iconsets/mdi-svg'`, that gets the icon data from a string with the format: `'SVG;<path data>;<view box>;<fill>;<stroke width>;<fill rule>'` if the string does not start with `'SVG;'`, it just uses the string as the path data like `mdi-svg` does.
 2. Functions that output the the previously mentioned format. The combination of the component and this functions allows the usage of icons from different packages in any Vuetify component that uses icons.
-   1. `faIconToString` to use a `IconDefinition` object representing a Font Awesome icon.
-   2. `hioToString` to use [heroicons](https://heroicons.com/) outline variant from `@xrnoz/heroicons-js`.
-   3. `hisToString` to use heroicons solid variant from `@xrnoz/heroicons-js`.
-   3. `himToString` to use heroicons mini variant from `@xrnoz/heroicons-js`.
-3. A Vite plugin that replaces the calls of provided embedding functions with it's resulting string to optimize the usage of the icons. By default it also removes the first import to `@xrnoz/vuetify-svg-icons` and `@fortawesome/free-solid-svg-icons`, as after replacing the function calls the imports are no longer neccesary.
+   1. `useFA` to use a `IconDefinition` object representing a Font Awesome icon.
+   2. `useHIO` to use [heroicons](https://heroicons.com/) outline variant from `@xrnoz/heroicons-js`.
+   3. `useHIS` to use heroicons solid variant from `@xrnoz/heroicons-js`.
+   4. `useHIM` to use heroicons mini variant from `@xrnoz/heroicons-js`.
+3. A Vite plugin that replaces the calls of the provided functions with it's resulting string to optimize the usage of the icons. By default it also removes the first import of `@xrnoz/vuetify-svg-icons` and of the icon package(s), as after replacing the function calls the imports are no longer neccesary.
 
 **Table of contents**
 
@@ -20,7 +25,7 @@ This package is composed of three main parts:
   - [3. Configure Vuetify](#3-configure-vuetify)
   - [4. Use the icons](#4-use-the-icons)
   - [5. (Optional) Configure the plugin](#5-optional-configure-the-plugin)
-  - [5.1. Applying the plugin to `@mdi/js`, `@mdi/light-js`, `@fortawesome/free-regular-svg-icons` and/or `@xrnoz/heroicons-js` icons:](#51-applying-the-plugin-to-mdijs-mdilight-js-fortawesomefree-regular-svg-icons-andor-xrnozheroicons-js-icons)
+  - [5.1. Applying the plugin to other icon packs:](#51-applying-the-plugin-to-other-icon-packs)
       - [`icons.ts`:](#iconsts)
       - [`vite.config.ts`:](#viteconfigts)
 - [Plugin options](#plugin-options)
@@ -31,7 +36,13 @@ This package is composed of three main parts:
 ### 1. Add the dependencies:
 
 ```shell
-yarn add @xrnoz/vuetify-svg-icons @fortawesome/free-solid-svg-icons @mdi/js
+yarn add @xrnoz/vuetify-svg-icons
+
+# yarn add @fortawesome/free-solid-svg-icons
+# yarn add @fortawesome/free-regular-svg-icons
+# yarn add @mdi/js
+# yarn add @mdi/light-js
+# yarn add @@xrnoz/heroicons-js
 ```
 
 ### 2. Create a file `icons.ts`:
@@ -47,16 +58,13 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 
 import { his, hio, him } from '@xrnoz/heroicons-js';
 
-import { faIconToString, hisToString, hioToString, himToString } from '@xrnoz/vuetify-svg-icons';
-/*
-  To use the plugin, import instead `fasEmbed`:
-    import { fasEmbed } from '@xrnoz/vuetify-svg-icons';
-*/
+// To use the plugin some of the functions are different, see section 5.
+import { useFA, useHIO, useHIS, useHIM } from '@xrnoz/vuetify-svg-icons';
 
 import type { IconAliases } from 'vuetify';
 
 export const aliases: IconAliases = {
-  ...defaultAliases, // Needed by Vuetify components, can be customized.
+  ...defaultAliases, // Used by Vuetify components, can be customized.
 
   // mdi
   dislike: mdiThumbDown,
@@ -65,35 +73,19 @@ export const aliases: IconAliases = {
   search: mdilMagnify,
 
   // fas
-  like: faIconToString(fas.faHeart),
-  /*
-    Use `fasEmbed` instead if using the plugin:
-      like: fasEmbed(fas.faHeart),
-  */
+  like: useFA(fas.faHeart),
 
   // far
-  notifications: faIconToString(far.faBell),
-
-  // heroicons solid
-  settings: hisToString(his.adjustmentsHorizontal),
-  /*
-    Use `hisEmbed` instead if using the plugin:
-      setting: hisEmbed(hio.adjustmentsHorizontal),
-  */
+  notifications: useFA(far.faBell),
 
   // heroicons outline
-  launch: hioToString(hio.rocketLaunch),
-  /*
-    Use `hioEmbed` instead if using the plugin:
-      launch: hioEmbed(hio.rocketLaunch),
-  */
+  launch: useHIO(hio.rocketLaunch),
+
+  // heroicons solid
+  settings: useHIS(his.adjustmentsHorizontal),
 
   // heroicons mini
-  experimental: himToString(him.beaker),
-  /*
-    Use `himEmbed` instead if using the plugin:
-      launch: himEmbed(him.beaker),
-  */
+  experimental: useHIM(him.beaker),
 };
 ```
 
@@ -128,6 +120,13 @@ vue.mount('#app');
 ```vue
 <template>
   <v-row>
+    <v-btn icon>
+      <!-- `launch` alias defined in icons.ts -->
+      <v-icon>$launch</v-icon>
+    </v-btn>
+  </v-row>
+
+  <v-row>
     <!-- `like` alias defined in icons.ts -->
     <v-btn color="blue" append-icon="$like">Like</v-btn>
   </v-row>
@@ -139,13 +138,13 @@ vue.mount('#app');
 
   <v-row>
     <!-- usage on the fly -->
-    <v-btn color="yellow" :append-icon="faIconToString(faFaceSurprise)">Wow!</v-btn>
+    <v-btn color="yellow" :append-icon="useFA(faFaceSurprise)">Wow!</v-btn>
   </v-row>
 </template>
 
 <script lang="ts" setup>
   import { faFaceSurprise } from '@fortawesome/free-solid-svg-icons';
-  import { faIconToString } from '@xrnoz/vuetify-svg-icons';
+  import { useFA } from '@xrnoz/vuetify-svg-icons';
 </script>
 ```
 
@@ -162,13 +161,13 @@ export default defineConfig({
     vue({}),
     vuetify({}),
 
-    // Embed Font Awesome solid icons
+    // Embed Font Awesome solid icons by default (must use `useFAS` instead of `useFA`)
     embedIcons({ include: ['./src/icons.ts', './src/ZaWarudo.vue'], showReplacements: true }),
   ],
 });
 ```
 
-### 5.1. Applying the plugin to `@mdi/js`, `@mdi/light-js`, `@fortawesome/free-regular-svg-icons` and/or `@xrnoz/heroicons-js` icons:
+### 5.1. Applying the plugin to other icon packs:
 
 ##### `icons.ts`:
 
@@ -183,8 +182,7 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 
 import { his, hio, him } from '@xrnoz/heroicons-js';
 
-// The embedding functions serve to flag the icons for embedding:
-import { mdiEmbed, mdilEmbed, fasEmbed, farEmbed, hisEmbed, hioEmbed, himEmbed } from '@xrnoz/vuetify-svg-icons';
+import { useMDI, useMDIL, useFAS, useFAR, useHIO, useHIS, useHIM } from '@xrnoz/vuetify-svg-icons';
 
 import type { IconAliases } from 'vuetify';
 
@@ -192,25 +190,25 @@ export const aliases: IconAliases = {
   ...defaultAliases,
 
   // mdi
-  dislike: mdiEmbed(mdi.mdiThumbDown),
+  dislike: useMDI(mdi.mdiThumbDown),
 
   // mdil
-  search: mdilEmbed(mdil.mdilMagnify) 
+  search: useMDIL(mdil.mdilMagnify) 
 
   // fas
-  like: fasEmbed(fas.faHeart),
+  like: useFAS(fas.faHeart),
 
   // far
-  notifications: farEmbed(far.faBell),
-
-  // heroicons solid
-  setting: hisEmbed(his.adjustmentsHorizontal),
+  notifications: useFAR(far.faBell),
 
   // heroicons outline
-  launch: hioEmbed(hio.rocketLaunch),
+  launch: useHIO(hio.rocketLaunch),
+
+  // heroicons solid
+  setting: useHIS(his.adjustmentsHorizontal),
 
   // heroicons mini
-  experimental: himEmbed(him.beaker),
+  experimental: useHIM(him.beaker),
 };
 ```
 
@@ -220,51 +218,27 @@ export const aliases: IconAliases = {
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
-import embedIcons, { farPreset, mdiPreset, mdilPreset, hisPreset, hioPreset, himPreset } from '@xrnoz/vuetify-svg-icons/plugin';
+import embedIcons from '@xrnoz/vuetify-svg-icons/plugin';
 
 export default defineConfig({
   plugins: [
     vue({}),
     vuetify({}),
 
-    // Embed Font Awesome solid icons:
-    embedIcons({ include: './src/icons.ts' }),
-    
-    // Embed Font Awesome regular icons:
-    embedIcons({ ...farPreset, include: './src/icons.ts' }),
-    
-    // Embed MDI icons:
-    embedIcons({ ...mdiPreset, include: './src/icons.ts' }),
-    
-    // Embed MDI Light icons:
-    embedIcons({ ...mdilPreset, include: './src/icons.ts' }),
-
-    // Embed heroicons solid:
-    embedIcons({ ...hisPreset, include: './src/icons.ts' }),
-
-    // Embed heroicons outline:
-    embedIcons({ ...hioPreset, include: './src/icons.ts' }),
-
-    // Embed heroicons mini:
-    embedIcons({ ...himPreset, include: './src/icons.ts' }),
+    // Use `embed` option to indicate the presets to use or add a custom one:
+    embedIcons({ include: './src/icons.ts', embed: ['mdi', 'mdil', 'fas', 'far', 'hio', 'his', 'him'] }),
   ],
 });
 ```
 
 ## Plugin options
 
-
 Option           | Required | Default                               | Description
 -----------------|----------|---------------------------------------|------------
 include          | yes      |                                       | Target files for the plugin.
-package          | no       | `'@fortawesome/free-solid-svg-icons'` | Package for icon extraction.
-iconsExport      | no       | `'fas'`                               | Export of `options.package` that provides the icons.
-removeImports    | no       | `true`                                | Whether to remove the first import of `options.extractor.package` (default: '@xrnoz/vuetify-svg-icons') and of `options.package` (default: '@fortawesome/free-solid-svg-icons') from the target..
+embed            | no       | `['fas']` | Icons package(s) for extraction and embedding.
+removeImports    | no       | `true`                                | Whether to remove from the target the first import of `extractorPkg` and of `iconsPkg` defined in the `ExtractionOptions` of the preset(s) used with the `embed` option.
 showReplacements | no       | `false`                               | Whether to show replacement information.
-extractor        | no       |                                       |
-extractor.fn     |          | `fasEmbed`                            | Function to get the SVG data from the icon object as a string.
-extractor.name   |          | `'fasEmbed'`                          | Name of the function that on each call will be replaced with a string literal with the SVG data of the icon.
-extractor.package |         | `'@xrnoz/vuetify-svg-icons'`          | Package that exports the icon extractor as it is imported in the target, e.g.: `'./my-extractor'` or `'other-package'`
 apply            | no       |                                       | Whether to restrict the plugin to run only on `build` or `serve`.
 dumpFile         | no       |                                       | File to dump the transform results for debugging purposes.
 
