@@ -1,4 +1,19 @@
-import { stripImports, difference } from '../utils.js';
+import { diff } from 'jest-diff';
+import c from 'picocolors';
+
+import { stripImports } from '../utils.js';
+
+const difference = (original: string, transformed: string) =>
+  diff(original, transformed, {
+    omitAnnotationLines: true,
+    aColor: c.yellow,
+    aIndicator: '  -',
+    bColor: c.yellow,
+    bIndicator: '  +',
+    commonIndicator: '   ',
+    contextLines: 2,
+    expand: false,
+  })?.replace(/^[^@]*@@[^,]+,[^,]+,[^,]+@@[^(?:\r?\n|\r)]*$(?:\r?\n|\r)?/gm, '');
 
 console.log('===============  Sampe 1  ===============');
 
@@ -17,7 +32,7 @@ export default {};
 `;
 
 console.log(
-  difference(sample1, stripImports(sample1, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+  difference(sample1, stripImports(sample1, false, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
 );
 
 console.log('===============  Sampe 2  ===============');
@@ -32,7 +47,7 @@ export default {};
 `;
 
 console.log(
-  difference(sample2, stripImports(sample2, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+  difference(sample2, stripImports(sample2, false, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
 );
 
 console.log('===============  Sampe 3  ===============');
@@ -52,7 +67,7 @@ export default {};
 `;
 
 console.log(
-  difference(sample3, stripImports(sample3, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+  difference(sample3, stripImports(sample3, false, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
 );
 
 console.log('===============  Sampe 4  ===============');
@@ -72,7 +87,7 @@ export default {};
 `;
 
 console.log(
-  difference(sample4, stripImports(sample4, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+  difference(sample4, stripImports(sample4, false, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
 );
 
 console.log('===============  Sampe 5  ===============');
@@ -93,7 +108,7 @@ export default {};
 `;
 
 console.log(
-  difference(sample5, stripImports(sample5, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+  difference(sample5, stripImports(sample5, false, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
 );
 
 console.log('===============  Sampe 6  ===============');
@@ -107,5 +122,5 @@ export default {};
 `;
 
 console.log(
-  difference(sample6, stripImports(sample6, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
+  difference(sample6, stripImports(sample6, false, '@fortawesome/free-solid-svg-icons', '@xrnoz/vuetify-svg-icons')),
 );

@@ -1,6 +1,5 @@
 import { parse, Node } from 'acorn';
 import { ancestor, simple } from 'acorn-walk';
-import { diff } from 'jest-diff';
 import c from 'picocolors';
 
 import type { ImportDeclaration /* , ImportExpression */ } from 'estree';
@@ -17,7 +16,7 @@ const getLocation = (ancestors: Node[]): Location | null => {
   return null;
 };
 
-export const stripImports = (code: string, iconPackage?: string, extractorPkg?: string) => {
+export const stripImports = (code: string, showReplacements: boolean, iconPackage?: string, extractorPkg?: string) => {
   const ast = parse(code, { ecmaVersion: 'latest', sourceType: 'module' });
 
   const imports: Location[] = [];
@@ -67,25 +66,18 @@ export const stripImports = (code: string, iconPackage?: string, extractorPkg?: 
     }
     stripped = stripped + code.slice(next);
 
+    if (showReplacements) {
+      if (packageFound && extractorPkg) console.info(`  ${c.yellow(`- Removed import of \`${extractorPkg}\`.`)}`);
+      if (iconPackageFound && iconPackage) console.info(`  ${c.yellow(`- Removed import of \`${iconPackage}\`.`)}`);
+    }
+
     return stripped;
   }
 
   return code;
 };
 
-export const difference = (original: string, transformed: string) =>
-  diff(original, transformed, {
-    omitAnnotationLines: true,
-    aColor: c.yellow,
-    aIndicator: '  -',
-    bColor: c.yellow,
-    bIndicator: '  +',
-    commonIndicator: '   ',
-    contextLines: 0,
-    expand: false,
-  })?.replace(/^[^@]*@@[^,]+,[^,]+,[^,]+@@[^(?:\r?\n|\r)]*$(?:\r?\n|\r)?/gm, '');
-
-const truncate = (text: string) => (text.length > 50 ? text.slice(0, 49) + '…' : text);
+export const truncate = (text: string) => (text.length > 50 ? text.slice(0, 49) + '…' : text);
 
 export const useReplacer = (
   showReplacements: boolean,

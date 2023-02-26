@@ -4,7 +4,7 @@ import { parse } from 'path';
 import { createFilter, PluginOption, FilterPattern } from 'vite';
 import c from 'picocolors';
 
-import { stripImports, useReplacer, difference } from './utils.js';
+import { stripImports, useReplacer } from './utils.js';
 
 export interface ExtractionOptions {
   /** Package that provides the icons that will be embeded. */
@@ -155,13 +155,12 @@ export default (options: IconEmbedOptions) => {
           transformed = transformed.replace(matcher, useReplacer(showReplacements, extractorFn, icons, matches));
 
           if (removeImports) {
-            const original = showReplacements ? transformed : '';
-
             const iconsPkgRemoved = removed.includes(iconsPkg);
             const extractorPkgRemoved = removed.includes(extractorPkg);
 
             transformed = stripImports(
               transformed,
+              showReplacements,
               iconsPkgRemoved ? undefined : iconsPkg,
               extractorPkgRemoved ? undefined : extractorPkg,
             );
@@ -171,8 +170,6 @@ export default (options: IconEmbedOptions) => {
 
             transformed = transformed.replace(RegExp(`${extractorPkg},?`, 'm'), '');
             if (matches) for (const match of matches) transformed = transformed.replace(RegExp(`${match},?`, 'm'), '');
-
-            if (showReplacements && original !== transformed) console.info(difference(original, transformed));
           }
         }
 
