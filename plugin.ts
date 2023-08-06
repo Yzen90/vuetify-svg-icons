@@ -17,7 +17,7 @@ export interface ExtractionOptions {
   extractorPkg: string;
 }
 
-export type Preset = 'fas' | 'far' | 'mdi' | 'mdil' | 'hio' | 'his' | 'him';
+export type Preset = 'fas' | 'far' | 'mdi' | 'mdil' | 'hio' | 'his' | 'him' | 'bi';
 
 export interface IconEmbedOptions {
   /** Target files for the plugin. */
@@ -94,6 +94,13 @@ export const himPreset: ExtractionOptions = {
   extractorPkg: '@xrnoz/vuetify-svg-icons',
 };
 
+export const biPreset: ExtractionOptions = {
+  iconsPkg: '@xrnoz/bootstrap-icons-js',
+  iconsExport: 'bi',
+  extractor: 'useBI',
+  extractorPkg: '@xrnoz/vuetify-svg-icons',
+};
+
 const presets: { [key in Preset]: ExtractionOptions } = {
   fas: fasPreset,
   far: farPreset,
@@ -102,6 +109,7 @@ const presets: { [key in Preset]: ExtractionOptions } = {
   hio: hioPreset,
   his: hisPreset,
   him: himPreset,
+  bi: biPreset,
 };
 
 export default (options: IconEmbedOptions) => {

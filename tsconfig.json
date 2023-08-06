@@ -1,14 +1,10 @@
 {
-  "extends": "@tsconfig/node18-strictest-esm/tsconfig.json",
+  "extends": ["@tsconfig/strictest/tsconfig", "@tsconfig/node20/tsconfig"],
   "compilerOptions": {
-    "module": "ESNext",
     "declaration": true,
     "outDir": "dist",
     "noImplicitReturns": false
   },
   "files": ["index.ts", "plugin.ts"],
-  "exclude": ["node_modules"],
-  "ts-node": {
-    "esm": true
-  }
+  "exclude": ["node_modules"]
 }

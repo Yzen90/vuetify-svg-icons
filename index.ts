@@ -22,3 +22,6 @@ export const useMDIL = embed;
 export const useHIS = (icon: string) => `SVG;${icon};;;;evenodd`;
 export const useHIO = (icon: string) => `SVG;${icon};;none;1.5`;
 export const useHIM = (icon: string) => `SVG;${icon};0 0 20 20;;;evenodd`;
+
+// Bootstrap Icons
+export const useBI = (icon: string) => `SVG;${icon};0 0 16 16`;

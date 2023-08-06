@@ -5,16 +5,18 @@ Allows the mixed usage of these icon packages and the embedding of icons:
 - [Material Design Icons](https://pictogrammers.com/library/mdi/)
 - [Material Design Icons Light](https://pictogrammers.com/library/mdil/)
 - [heroicons (outline, solid and mini variants)](https://heroicons.com/)
+- [Bootstrap Icons](https://icons.getbootstrap.com/)
 - Others can be added by creating custom `ExtractionOptions`.
 
 This package is composed of three main parts:
 
 1. A Vue component for Vuetify based on the one from the `mdi` IconPack exported by `'vuetify/iconsets/mdi-svg'`, that gets the icon data from a string with the format: `'SVG;<path data>;<view box>;<fill>;<stroke width>;<fill rule>'` if the string does not start with `'SVG;'`, it just uses the string as the path data like `mdi-svg` does.
-2. Functions that output the the previously mentioned format. The combination of the component and this functions allows the usage of icons from different packages in any Vuetify component that uses icons.
+2. Functions that output the the previously mentioned format. The combination of the component and this functions allows the mixed usage of icons from different packages in any Vuetify component that uses icons.
    1. `useFA` to use a `IconDefinition` object representing a Font Awesome icon.
    2. `useHIO` to use [heroicons](https://heroicons.com/) outline variant from `@xrnoz/heroicons-js`.
    3. `useHIS` to use heroicons solid variant from `@xrnoz/heroicons-js`.
    4. `useHIM` to use heroicons mini variant from `@xrnoz/heroicons-js`.
+   5. `useBI` to use Bootstrap Icons from `@xrnoz/bootstrap-icons-js`.
 3. A Vite plugin that replaces the calls of the provided functions with it's resulting string to optimize the usage of the icons. By default it also removes the first import of `@xrnoz/vuetify-svg-icons` and of the icon package(s), as after replacing the function calls the imports are no longer neccesary.
 
 **Table of contents**
@@ -43,7 +45,8 @@ yarn add @xrnoz/vuetify-svg-icons
 # yarn add @fortawesome/free-regular-svg-icons
 # yarn add @mdi/js
 # yarn add @mdi/light-js
-# yarn add @@xrnoz/heroicons-js
+# yarn add @xrnoz/heroicons-js
+# yarn add @xrnoz/bootstrap-icons-js
 ```
 
 ### 2. Create a file `icons.ts`:
@@ -59,8 +62,10 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 
 import { his, hio, him } from '@xrnoz/heroicons-js';
 
-// To use the plugin some of the functions are different, see section 5.
-import { useFA, useHIO, useHIS, useHIM } from '@xrnoz/vuetify-svg-icons';
+import { bi } from '@xrnoz/bootstrap-icons-js';
+
+// To use the vite plugin some of the functions are different, see section 5.
+import { useFA, useHIO, useHIS, useHIM, useBI } from '@xrnoz/vuetify-svg-icons';
 
 import type { IconAliases } from 'vuetify';
 
@@ -87,6 +92,9 @@ export const aliases: IconAliases = {
 
   // heroicons mini
   experimental: useHIM(him.beaker),
+
+  // bootstrap icons
+  inLove: useBI(bi.biArrowThroughHeart),
 };
 ```
 
@@ -183,7 +191,9 @@ import { far } from '@fortawesome/free-regular-svg-icons';
 
 import { his, hio, him } from '@xrnoz/heroicons-js';
 
-import { useMDI, useMDIL, useFAS, useFAR, useHIO, useHIS, useHIM } from '@xrnoz/vuetify-svg-icons';
+import { bi } from '@xrnoz/bootstrap-icons-js';
+
+import { useMDI, useMDIL, useFAS, useFAR, useHIO, useHIS, useHIM, useBI } from '@xrnoz/vuetify-svg-icons';
 
 import type { IconAliases } from 'vuetify';
 
@@ -210,6 +220,9 @@ export const aliases: IconAliases = {
 
   // heroicons mini
   experimental: useHIM(him.beaker),
+
+  // bootstrap icons
+  inLove: useBI(bi.biArrowThroughHeart),
 };
 ```
 
@@ -227,7 +240,7 @@ export default defineConfig({
     vuetify({}),
 
     // Use `embed` option to indicate the presets to use or add a custom one:
-    embedIcons({ include: './src/icons.ts', embed: ['mdi', 'mdil', 'fas', 'far', 'hio', 'his', 'him'] }),
+    embedIcons({ include: './src/icons.ts', embed: ['mdi', 'mdil', 'fas', 'far', 'hio', 'his', 'him', 'bi'] }),
   ],
 });
 ```
@@ -263,4 +276,5 @@ export const fasPreset: ExtractionOptions = {
 - [Material Design Icons](https://pictogrammers.com/library/mdi/)
 - [Material Design Icons Light](https://pictogrammers.com/library/mdil/)
 - [heroicons](https://heroicons.com/)
-- [Vuetify Icon Fonts Documentation](https://next.vuetifyjs.com/en/features/icon-fonts/)
+- [Bootstrap Icons](https://icons.getbootstrap.com/)
+- [Vuetify Icon Fonts Documentation](https://vuetifyjs.com/en/features/icon-fonts/)
